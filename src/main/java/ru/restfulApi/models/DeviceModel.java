@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class DeviceModel {
+public class DeviceModel<T> {
     private String id;
     private String name;
-    private DeviceDataModel data;
+    private T data;
 }
