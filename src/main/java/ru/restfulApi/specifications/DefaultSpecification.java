@@ -13,14 +13,14 @@ public class DefaultSpecification {
         return new RequestSpecBuilder()
                 .setBaseUri(Props.getProperty("baseUri"))
                 .setContentType(ContentType.JSON)
-                .log(LogDetail.BODY)
+                .log(LogDetail.ALL)
                 .build();
     }
 
-    public static ResponseSpecification responceSpec() {
+    public static ResponseSpecification responseSpec(int statusCode) {
         return new ResponseSpecBuilder()
-                .expectStatusCode(200)
-                .log(LogDetail.BODY)
+                .expectStatusCode(statusCode)
+                .log(LogDetail.ALL)
                 .build();
     }
 }

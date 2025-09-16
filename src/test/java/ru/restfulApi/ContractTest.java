@@ -1,5 +1,6 @@
 package ru.restfulApi;
 
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import ru.restfulApi.endPoints.RestfulApiEndPoints;
 import ru.restfulApi.specifications.DefaultSpecification;
@@ -15,7 +16,7 @@ public class ContractTest extends BaseTest {
                 .when()
                 .get(RestfulApiEndPoints.devices)
                 .then()
-                .spec(DefaultSpecification.responceSpec())
+                .spec(DefaultSpecification.responseSpec(HttpStatus.SC_OK))
                 .body(matchesJsonSchemaInClasspath("deviceResponseSchema.json"));
     }
 }
