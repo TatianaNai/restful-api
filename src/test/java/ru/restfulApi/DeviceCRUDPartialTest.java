@@ -16,8 +16,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class DeviceCRUDPartialTest extends BaseTest {
@@ -52,6 +51,9 @@ public class DeviceCRUDPartialTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("deviceProvider")
     public void shouldHaveCorrectPartialCRUDDevice(DeviceModel device, Map<String, String> parameter) {
+        log.info("Test: \"shouldHaveCorrectPartialCRUDDevice\"");
+
+        log.info("Creating device");
         String deviceId = RestAssured.given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
@@ -62,9 +64,10 @@ public class DeviceCRUDPartialTest extends BaseTest {
                 .extract()
                 .path("id");
         log.info("Device with id \"{}\" is created", deviceId);
-
         String nameBeforeChanging = DeviceRestService.getDeviceById(deviceId).getName();
+        log.info("Device's name before changing: \"{}\"", nameBeforeChanging);
 
+        log.info("Changing device's parameter by id");
         given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
@@ -72,12 +75,14 @@ public class DeviceCRUDPartialTest extends BaseTest {
                 .patch(RestfulApiEndPoints.deviceById, deviceId)
                 .then()
                 .spec(DefaultSpecification.responseSpec(HttpStatus.SC_OK));
-
         String nameAfterChanging = DeviceRestService.getDeviceById(deviceId).getName();
+        log.info("Device's name after changing: \"{}\"", nameAfterChanging);
+        assertAll(
+                () -> assertNotEquals(nameBeforeChanging, nameAfterChanging, "Device's name before changing: " + nameBeforeChanging + " is equal to device's name after changing: " + nameAfterChanging),
+                () -> assertEquals(parameter.values().iterator().next(), nameAfterChanging, "Value of parameter " + parameter.values().iterator().next() + " is not equal to " + nameAfterChanging)
+        );
 
-        assertNotEquals(nameBeforeChanging, nameAfterChanging);
-        assertEquals(parameter.values().iterator().next(), nameAfterChanging);
-
+        log.info("Deleting device by id");
         given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
@@ -85,6 +90,7 @@ public class DeviceCRUDPartialTest extends BaseTest {
                 .then()
                 .spec(DefaultSpecification.responseSpec(HttpStatus.SC_OK));
 
+        log.info("Check if device was deleted by id");
         given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()

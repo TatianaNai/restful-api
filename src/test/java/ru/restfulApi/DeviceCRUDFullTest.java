@@ -12,11 +12,9 @@ import ru.restfulApi.models.DeviceModel;
 import ru.restfulApi.services.DeviceRestService;
 import ru.restfulApi.specifications.DefaultSpecification;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j
@@ -61,6 +59,9 @@ public class DeviceCRUDFullTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("deviceProvider")
     public void shouldHaveCorrectFullCRUDDevice(DeviceModel deviceToAdd, DeviceModel deviceToChange) {
+        log.info("Test: \"shouldHaveCorrectFullCRUDDevice\"");
+
+        log.info("Creating device");
         String deviceId = RestAssured.given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
@@ -71,9 +72,10 @@ public class DeviceCRUDFullTest extends BaseTest {
                 .extract()
                 .path("id");
         log.info("Device with id \"{}\" is created", deviceId);
-
         DeviceModel deviceBeforeChanging = DeviceRestService.getDeviceById(deviceId);
+        log.info("Device before changing info:" + deviceBeforeChanging);
 
+        log.info("Changing device's info by id");
         given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
@@ -81,11 +83,11 @@ public class DeviceCRUDFullTest extends BaseTest {
                 .put(RestfulApiEndPoints.deviceById, deviceId)
                 .then()
                 .spec(DefaultSpecification.responseSpec(HttpStatus.SC_OK));
-
         DeviceModel deviceAfterChanging = DeviceRestService.getDeviceById(deviceId);
+        log.info("Device after changing info:" + deviceAfterChanging);
+        assertNotEquals(deviceBeforeChanging, deviceAfterChanging, "Device before changing: " + deviceBeforeChanging + " is equal to device after changing: " + deviceAfterChanging);
 
-        assertNotEquals(deviceBeforeChanging, deviceAfterChanging);
-
+        log.info("Deleting device by id");
         given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
@@ -93,6 +95,7 @@ public class DeviceCRUDFullTest extends BaseTest {
                 .then()
                 .spec(DefaultSpecification.responseSpec(HttpStatus.SC_OK));
 
+        log.info("Check if device was deleted by id");
         given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
