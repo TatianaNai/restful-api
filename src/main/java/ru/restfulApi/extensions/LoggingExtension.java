@@ -12,13 +12,10 @@ public class LoggingExtension implements BeforeTestExecutionCallback {
     public void beforeTestExecution(ExtensionContext context) {
         RestAssured.filters((req, res, ctx) -> {
             Response response = ctx.next(req, res);
-            log.info("Request URI: {}", req.getURI());
-            log.info("Request method: {}", req.getMethod());
-            log.info("Request header: {}", req.getHeaders());
-            log.info("Request body: {}", (Object) req.getBody());
-            log.info("Response status: {}", response.getStatusCode());
-            log.info("Response header: {}", response.getHeaders());
-            log.info("Response body: {}", response.getBody().asPrettyString());
+            log.info("Request URI: {}\nRequest method: {}\nRequest headers: {}\nRequest body: {}",
+                    req.getURI(), req.getMethod(), req.getHeaders(), req.getBody());
+            log.info("Response status: {}\nResponse header: {}\nResponse body: {}", response.getStatusCode(),
+                    response.getHeaders(), response.getBody().asPrettyString());
             return response;
         });
     }

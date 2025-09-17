@@ -11,7 +11,7 @@ public class Props {
             PROPERTIES.load(Props.class.getClassLoader()
                     .getResourceAsStream("application.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to load application.properties", e);
         }
     }
 
