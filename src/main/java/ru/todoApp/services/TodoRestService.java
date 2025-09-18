@@ -3,6 +3,7 @@ package ru.todoApp.services;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import ru.todoApp.models.TodoModel;
+import ru.todoApp.specifications.AuthSpecification;
 import ru.todoApp.specifications.DefaultSpecification;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public class TodoRestService {
 
     public void deleteById(long id, int statusCode) {
         given()
-                .spec(DefaultSpecification.requestSpec())
+                .spec(AuthSpecification.requestSpec())
                 .when()
                 .delete("/" + id)
                 .then()
