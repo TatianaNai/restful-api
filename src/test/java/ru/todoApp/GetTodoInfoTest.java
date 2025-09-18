@@ -1,5 +1,6 @@
 package ru.todoApp;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Slf4j
 public class GetTodoInfoTest extends BaseTest {
     private final TodoRestService todoRestService = new TodoRestService();
 
@@ -44,15 +46,18 @@ public class GetTodoInfoTest extends BaseTest {
     @DisplayName("Get list of todos with parameter offset")
     public void shouldHaveCorrectGetTodoListWithOffset(int offset, int statusCode) {
         int amountOfAllTodo = todoRestService.getListByType("$", TodoModel.class,HttpStatus.SC_OK).size();
-        if(offset < 0) {
-            todoRestService.getAllResponse(statusCode, Map.of("offset", offset));
-        }
-        else {
+        log.info("Total amount of todo: {}", amountOfAllTodo);
+        if(offset > 0) {
             int expectedAmountOfTodo = Math.max(amountOfAllTodo - offset, 0);
+            log.info("Expected amount of todo in response with offset parameter: {}", expectedAmountOfTodo);
             int amountOfTodoWithOffset = todoRestService
                     .getListByType("$", TodoModel.class, statusCode, Map.of("offset", offset))
                     .size();
+            log.info("Amount of todo in response with offset parameter: {}", amountOfTodoWithOffset);
             assertEquals(expectedAmountOfTodo, amountOfTodoWithOffset, "Amount of todos: " + amountOfTodoWithOffset + " is not equal to expected amount: " + expectedAmountOfTodo);
+        }
+        else {
+            todoRestService.getAllResponse(statusCode, Map.of("offset", offset));
         }
     }
 
@@ -61,15 +66,18 @@ public class GetTodoInfoTest extends BaseTest {
     @DisplayName("Get list of todos with parameter limit")
     public void shouldHaveCorrectGetTodoListWithLimit(int limit, int statusCode) {
         int amountOfAllTodo = todoRestService.getListByType("$", TodoModel.class,HttpStatus.SC_OK).size();
-        if(limit < 0) {
-            todoRestService.getAllResponse(statusCode, Map.of("limit", limit));
-        }
-        else {
+        log.info("Total amount of todo: {}", amountOfAllTodo);
+        if(limit > 0) {
             int expectedAmountOfTodo = Math.min(limit, amountOfAllTodo);
+            log.info("Expected amount of todo in response with limit parameter: {}", expectedAmountOfTodo);
             int amountOfTodoWithLimit = todoRestService
                     .getListByType("$", TodoModel.class, statusCode, Map.of("limit", limit))
                     .size();
+            log.info("Amount of todo in response with limit parameter: {}", amountOfTodoWithLimit);
             assertEquals(expectedAmountOfTodo, amountOfTodoWithLimit, "Amount of todos: " + amountOfTodoWithLimit + " is not equal to expected amount: " + expectedAmountOfTodo);
+        }
+        else {
+            todoRestService.getAllResponse(statusCode, Map.of("limit", limit));
         }
     }
 }

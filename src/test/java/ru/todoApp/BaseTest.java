@@ -22,7 +22,6 @@ public abstract class BaseTest {
 
         TodoRestService todoRestService = new TodoRestService();
         int amountOfTodo = todoRestService.getListByType("$", TodoModel.class,HttpStatus.SC_OK).size();
-
         if(amountOfTodo == 0) {
             for(int i = 0; i < Props.getIntProperty("startAmountTodo"); i++) {
                 TodoModel todo = new TodoModel(RandomGenerator.getRandomLongId(),
