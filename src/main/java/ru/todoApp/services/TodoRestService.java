@@ -46,8 +46,8 @@ public class TodoRestService {
                 .getList(path, type);
     }
 
-    public void post(TodoModel todoModel, int statusCode) {
-        given()
+    public ValidatableResponse post(TodoModel todoModel, int statusCode) {
+        return given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
                 .body(todoModel)
