@@ -13,8 +13,11 @@ import ru.todoApp.utils.Props;
 public class DefaultSpecification {
     public static RequestSpecification requestSpec() {
         return new RequestSpecBuilder()
-                .setBaseUri(Props.getProperty("baseUri"))
-                .setAuth(RestAssured.basic(Props.getProperty("login"), Props.getProperty("password")))
+                .setBaseUri(Props.getStringProperty("baseUri"))
+                .setAuth(RestAssured.preemptive().basic(
+                        Props.getStringProperty("login"),
+                        Props.getStringProperty("password")
+                ))
                 .setContentType(ContentType.JSON)
                 .setBasePath(TodoApiEndPoints.TODOS)
                 .log(LogDetail.ALL)
