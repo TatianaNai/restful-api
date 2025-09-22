@@ -28,7 +28,8 @@ public class UpdateTodoTest extends BaseTest {
         todoRestService.post(todo, HttpStatus.SC_CREATED);
         log.info("Todo to update: {}", todo);
 
-        TodoModel updateTodo = new TodoModel(generateId(),
+        long updateTodoId = generateId();
+        TodoModel updateTodo = new TodoModel(updateTodoId,
                 randomStringWithLength(12),
                 randomBoolean());
         log.info("Todo for update: {}", updateTodo);
@@ -42,6 +43,8 @@ public class UpdateTodoTest extends BaseTest {
         );
         log.info("Delete todo with id {}", todoId);
         removeId(todoId);
+        log.info("Delete todo with id {}", updateTodoId);
+        removeId(updateTodoId);
     }
 
     @Test

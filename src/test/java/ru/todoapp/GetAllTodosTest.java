@@ -22,7 +22,7 @@ public class GetAllTodosTest extends BaseTest {
     @DisplayName("Get list of all todos")
     public void shouldHaveCorrectGetAllTodoList() {
         log.info("Add todos");
-        List<Long> todoIds = generateTodosWithAmount(getIntProperty("startAmountTodo"));
+        List<Long> todoIds = generateTodosWithAmount(getIntProperty("amountTodos"));
 
         log.info("Check getting all todos");
         todoRestService.getTodosResponse(HttpStatus.SC_OK)

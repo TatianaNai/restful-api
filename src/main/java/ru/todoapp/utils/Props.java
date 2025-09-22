@@ -21,7 +21,8 @@ public class Props {
     }
 
     public static String getStringProperty(String key) {
-        return PROPERTIES.getProperty(key);
+        String property = System.getProperty(key);
+        return property == null ? PROPERTIES.getProperty(key) : property;
     }
 
     public static int getIntProperty(String key) {

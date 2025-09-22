@@ -21,7 +21,7 @@ public class ContractTest extends BaseTest {
     @DisplayName("Verify JSON schema for todo list")
     public void shouldBeCorrectGetTodoResponseScheme() {
         log.info("Add todos");
-        List<Long> todoIds = generateTodosWithAmount(getIntProperty("startAmountTodo"));
+        List<Long> todoIds = generateTodosWithAmount(getIntProperty("amountTodos"));
 
         log.info("Check JSON contract");
         todoRestService.getTodosResponse(HttpStatus.SC_OK)

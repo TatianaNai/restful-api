@@ -24,13 +24,12 @@ public class GetTodoInfoTest extends BaseTest {
     private final TodoRestService todoRestService = new TodoRestService();
 
     static Stream<Arguments> parameterProvider() {
-        int totalTodos = new TodoRestService().getListTodo().size();
         return Stream.of(
                 Arguments.of(randomIntWithBorders(-100, 0), HttpStatus.SC_BAD_REQUEST),
                 Arguments.of(0, HttpStatus.SC_OK),
-                Arguments.of(randomIntWithBorders(1, totalTodos), HttpStatus.SC_OK),
-                Arguments.of(totalTodos, HttpStatus.SC_OK),
-                Arguments.of(randomIntWithBorders(totalTodos + 1, 100), HttpStatus.SC_OK)
+                Arguments.of(randomIntWithBorders(1, getIntProperty("amountTodos")), HttpStatus.SC_OK),
+                Arguments.of(getIntProperty("amountTodos"), HttpStatus.SC_OK),
+                Arguments.of(randomIntWithBorders(getIntProperty("amountTodos") + 1, 100), HttpStatus.SC_OK)
         );
     }
 
@@ -39,7 +38,7 @@ public class GetTodoInfoTest extends BaseTest {
     @DisplayName("Check amount of todos with parameter offset")
     public void shouldReturnCorrectAmountOfTodosWithOffset(int offset, int statusCode) {
         log.info("Add todos");
-        List<Long> todoIds = generateTodosWithAmount(getIntProperty("startAmountTodo"));
+        List<Long> todoIds = generateTodosWithAmount(getIntProperty("amountTodos"));
 
         int amountOfAllTodo = todoRestService.getListTodo().size();
         log.info("Total amount of todo: {}", amountOfAllTodo);
@@ -64,7 +63,7 @@ public class GetTodoInfoTest extends BaseTest {
     @DisplayName("Check amount of todos with parameter limit")
     public void shouldReturnCorrectAmountOfTodosWithLimit(int limit, int statusCode) {
         log.info("Add todos");
-        List<Long> todoIds = generateTodosWithAmount(getIntProperty("startAmountTodo"));
+        List<Long> todoIds = generateTodosWithAmount(getIntProperty("amountTodos"));
 
         int amountOfAllTodo = todoRestService.getListTodo().size();
         log.info("Total amount of todo: {}", amountOfAllTodo);
