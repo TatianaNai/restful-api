@@ -3,19 +3,22 @@ package ru.todoapp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.todoapp.services.TodoRestService;
+import ru.todoapp.utils.RandomGenerator;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.todoapp.utils.Props.getIntProperty;
 import static ru.todoapp.utils.RandomGenerator.*;
 
+@Isolated
 @Slf4j
 public class GetTodoInfoTest extends BaseTest {
     private final TodoRestService todoRestService = new TodoRestService();
@@ -31,18 +34,13 @@ public class GetTodoInfoTest extends BaseTest {
         );
     }
 
-    @Test
-    @DisplayName("Get list of all todos")
-    public void shouldHaveCorrectGetAllTodoList() {
-        todoRestService.getTodosResponse(HttpStatus.SC_OK)
-                .body("$", everyItem(allOf(
-                        hasKey("id"), hasKey("text"), hasKey("completed"))));
-    }
-
     @ParameterizedTest
     @MethodSource("parameterProvider")
     @DisplayName("Check amount of todos with parameter offset")
     public void shouldReturnCorrectAmountOfTodosWithOffset(int offset, int statusCode) {
+        log.info("Add todos");
+        List<Long> todoIds = generateTodosWithAmount(getIntProperty("startAmountTodo"));
+
         int amountOfAllTodo = todoRestService.getListTodo().size();
         log.info("Total amount of todo: {}", amountOfAllTodo);
         if (offset > 0) {
@@ -56,12 +54,18 @@ public class GetTodoInfoTest extends BaseTest {
         } else {
             todoRestService.getTodosResponse(statusCode, Map.of("offset", offset));
         }
+
+        log.info("Delete created todos");
+        todoIds.forEach(RandomGenerator::removeId);
     }
 
     @ParameterizedTest
     @MethodSource("parameterProvider")
     @DisplayName("Check amount of todos with parameter limit")
     public void shouldReturnCorrectAmountOfTodosWithLimit(int limit, int statusCode) {
+        log.info("Add todos");
+        List<Long> todoIds = generateTodosWithAmount(getIntProperty("startAmountTodo"));
+
         int amountOfAllTodo = todoRestService.getListTodo().size();
         log.info("Total amount of todo: {}", amountOfAllTodo);
         if (limit > 0) {
@@ -75,5 +79,8 @@ public class GetTodoInfoTest extends BaseTest {
         } else {
             todoRestService.getTodosResponse(statusCode, Map.of("limit", limit));
         }
+
+        log.info("Delete created todos");
+        todoIds.forEach(RandomGenerator::removeId);
     }
 }

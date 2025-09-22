@@ -25,11 +25,11 @@ public class AddTodoTest extends BaseTest {
                         .completed(randomBoolean())
                         .build()),
                 Arguments.of(TodoModel.builder()
-                        .id(randomLongId())
+                        .id(generateId())
                         .completed(randomBoolean())
                         .build()),
                 Arguments.of(TodoModel.builder()
-                        .id(randomLongId())
+                        .id(generateId())
                         .text(randomStringWithLength(getIntProperty("textLength")))
                         .build())
         );
@@ -38,10 +38,13 @@ public class AddTodoTest extends BaseTest {
     @RepeatedTest(3)
     @DisplayName("Add todo")
     public void shouldHaveCorrectAddTodo() {
-        TodoModel todo = new TodoModel(randomLongId(),
+        long randomId = generateId();
+        TodoModel todo = new TodoModel(randomId,
                 randomStringWithLength(getIntProperty("textLength")),
                 randomBoolean());
         todoRestService.post(todo, HttpStatus.SC_CREATED);
+
+        removeId(randomId);
     }
 
     @ParameterizedTest

@@ -20,27 +20,34 @@ public class UpdateTodoTest extends BaseTest {
     @Test
     @DisplayName("Update existing todo")
     public void shouldHaveCorrectUpdateExistingTodo() {
-        List<TodoModel> todosBeforeChanging = todoRestService.getListTodo();
-        TodoModel oldTodo = todosBeforeChanging.get(randomIntWithBorders(0, todosBeforeChanging.size()));
-        log.info("Todo to update: {}", oldTodo);
-        TodoModel updateTodo = new TodoModel(randomLongId(),
+        log.info("Add todo");
+        long todoId = generateId();
+        TodoModel todo = new TodoModel(todoId,
+                randomStringWithLength(getIntProperty("textLength")),
+                randomBoolean());
+        todoRestService.post(todo, HttpStatus.SC_CREATED);
+        log.info("Todo to update: {}", todo);
+
+        TodoModel updateTodo = new TodoModel(generateId(),
                 randomStringWithLength(12),
                 randomBoolean());
         log.info("Todo for update: {}", updateTodo);
-        todoRestService.putById(updateTodo, oldTodo.getId(), HttpStatus.SC_OK);
+        todoRestService.putById(updateTodo, todoId, HttpStatus.SC_OK);
 
         List<TodoModel> todosAfterChanging = todoRestService.getListTodo();
         log.info("Check if todo was updated");
         assertAll(
                 () -> assertTrue(todosAfterChanging.contains(updateTodo), "Updated todo :" + updateTodo + " is not in the list of all todos"),
-                () -> assertFalse(todosAfterChanging.contains(oldTodo), "Todo before changing: " + oldTodo + " is still in the list of all todos")
+                () -> assertFalse(todosAfterChanging.contains(todo), "Todo before changing: " + todo + " is still in the list of all todos")
         );
+        log.info("Delete todo with id {}", todoId);
+        removeId(todoId);
     }
 
     @Test
     @DisplayName("Update not existing todo. Negative test")
     public void shouldNotAllowUpdateNotExistingTodo() {
-        TodoModel todo = new TodoModel(randomLongId(),
+        TodoModel todo = new TodoModel(generateId(),
                 randomStringWithLength(getIntProperty("textLength")),
                 randomBoolean());
         log.info("Not existed todo for update: {}", todo);

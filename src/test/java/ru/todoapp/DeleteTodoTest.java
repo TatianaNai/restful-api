@@ -10,6 +10,7 @@ import ru.todoapp.services.TodoRestService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ru.todoapp.utils.Props.getIntProperty;
 import static ru.todoapp.utils.RandomGenerator.*;
 
 @Slf4j
@@ -19,23 +20,25 @@ public class DeleteTodoTest extends BaseTest {
     @Test
     @DisplayName("Delete existing todo")
     public void shouldHaveCorrectDeleteExistingTodo() {
-        List<TodoModel> todosBeforeChanging = todoRestService.getListTodo();
-        log.info("Check if todo list is not empty");
-        assertFalse(todosBeforeChanging.isEmpty(), "Todos list is empty");
+        log.info("Add todo");
+        long todoId = generateId();
+        TodoModel todo = new TodoModel(todoId,
+                randomStringWithLength(getIntProperty("textLength")),
+                randomBoolean());
+        todoRestService.post(todo, HttpStatus.SC_CREATED);
 
-        TodoModel todoToDelete = todosBeforeChanging.get(randomIntWithBorders(0, todosBeforeChanging.size()));
-        log.info("Delete todo by id: {}", todoToDelete.getId());
-        todoRestService.deleteById(todoToDelete.getId(), HttpStatus.SC_NO_CONTENT);
+        log.info("Delete todo by id: {}", todoId);
+        todoRestService.deleteById(todoId, HttpStatus.SC_NO_CONTENT);
 
         List<TodoModel> todosAfterChanging = todoRestService.getListTodo();
         log.info("Check if todo is deleted");
-        assertFalse(todosAfterChanging.contains(todoToDelete), "Todo before deleting: " + todoToDelete + " is still in the list of all todos");
+        assertFalse(todosAfterChanging.contains(todo), "Todo before deleting: " + todo + " is still in the list of all todos");
     }
 
     @Test
     @DisplayName("Delete not existing todo. Negative test")
     public void shouldNotAllowDeleteNotExistingTodo() {
-        long randomId = randomLongId();
+        long randomId = generateId();
         log.info("Random id to delete not existing todo: {}", randomId);
         todoRestService.deleteById(randomId, HttpStatus.SC_NOT_FOUND);
     }

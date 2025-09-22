@@ -21,7 +21,8 @@ public class PostPerformanceTest extends BaseTest {
         long maxTime = 0;
 
         for (int i = 0; i < getIntProperty("repetitionsForPostPerformance"); i++) {
-            TodoModel todo = new TodoModel(randomLongId(),
+            long todoId = generateId();
+            TodoModel todo = new TodoModel(todoId,
                     randomStringWithLength(getIntProperty("textLength")),
                     randomBoolean());
             long responseTime = todoRestService.post(todo, HttpStatus.SC_CREATED)
@@ -30,6 +31,7 @@ public class PostPerformanceTest extends BaseTest {
             log.info("POST /todos executed in {} ms", responseTime);
             minTime = Math.min(minTime, responseTime);
             maxTime = Math.max(maxTime, responseTime);
+            removeId(todoId);
         }
         log.info("Min time: {} ms, Max time: {} ms", minTime, maxTime);
     }

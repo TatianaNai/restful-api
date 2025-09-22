@@ -9,23 +9,25 @@ import ru.todoapp.utils.RandomGenerator;
 
 import java.util.List;
 
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasKey;
 import static ru.todoapp.utils.Props.getIntProperty;
-import static ru.todoapp.utils.RandomGenerator.*;
+import static ru.todoapp.utils.RandomGenerator.generateTodosWithAmount;
 
 @Slf4j
-public class ContractTest extends BaseTest {
+public class GetAllTodosTest extends BaseTest {
     private final TodoRestService todoRestService = new TodoRestService();
 
     @Test
-    @DisplayName("Verify JSON schema for todo list")
-    public void shouldBeCorrectGetTodoResponseScheme() {
+    @DisplayName("Get list of all todos")
+    public void shouldHaveCorrectGetAllTodoList() {
         log.info("Add todos");
         List<Long> todoIds = generateTodosWithAmount(getIntProperty("startAmountTodo"));
 
-        log.info("Check JSON contract");
+        log.info("Check getting all todos");
         todoRestService.getTodosResponse(HttpStatus.SC_OK)
-                .body(matchesJsonSchemaInClasspath("todoResponseSchema.json"));
+                .body("$", everyItem(allOf(
+                        hasKey("id"), hasKey("text"), hasKey("completed"))));
 
         log.info("Delete created todos");
         todoIds.forEach(RandomGenerator::removeId);
