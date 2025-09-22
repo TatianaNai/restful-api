@@ -1,13 +1,14 @@
-package ru.todoApp;
+package ru.todoapp;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.todoApp.models.TodoModel;
-import ru.todoApp.services.TodoRestService;
-import ru.todoApp.utils.Props;
-import ru.todoApp.utils.RandomGenerator;
+import ru.todoapp.models.TodoModel;
+import ru.todoapp.services.TodoRestService;
+
+import static ru.todoapp.utils.Props.*;
+import static ru.todoapp.utils.RandomGenerator.*;
 
 @Slf4j
 public class PostPerformanceTest extends BaseTest {
@@ -19,10 +20,10 @@ public class PostPerformanceTest extends BaseTest {
         long minTime = Long.MAX_VALUE;
         long maxTime = 0;
 
-        for(int i = 0; i < Props.getIntProperty("repetitionsForPostPerformance"); i++) {
-            TodoModel todo = new TodoModel(RandomGenerator.getRandomLongId(),
-                    RandomGenerator.getRandomStringByLength(Props.getIntProperty("textLength")),
-                    RandomGenerator.getRandomBoolean());
+        for (int i = 0; i < getIntProperty("repetitionsForPostPerformance"); i++) {
+            TodoModel todo = new TodoModel(randomLongId(),
+                    randomStringWithLength(getIntProperty("textLength")),
+                    randomBoolean());
             long responseTime = todoRestService.post(todo, HttpStatus.SC_CREATED)
                     .extract()
                     .time();

@@ -1,8 +1,13 @@
-package ru.todoApp.utils;
+package ru.todoapp.utils;
+
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.util.Properties;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Props {
     private static final Properties PROPERTIES = new Properties();
 

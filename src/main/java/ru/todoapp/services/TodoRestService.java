@@ -1,10 +1,11 @@
-package ru.todoApp.services;
+package ru.todoapp.services;
 
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
-import ru.todoApp.models.TodoModel;
-import ru.todoApp.specifications.AuthSpecification;
-import ru.todoApp.specifications.DefaultSpecification;
+import org.apache.http.HttpStatus;
+import ru.todoapp.models.TodoModel;
+import ru.todoapp.specifications.AuthSpecification;
+import ru.todoapp.specifications.DefaultSpecification;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import static io.restassured.RestAssured.given;
 
 public class TodoRestService {
 
-    public ValidatableResponse getAllResponse(int statusCode) {
+    public ValidatableResponse getTodosResponse(int statusCode) {
         return given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
@@ -22,7 +23,7 @@ public class TodoRestService {
                 .spec(DefaultSpecification.responseSpec(statusCode));
     }
 
-    public ValidatableResponse getAllResponse(int statusCode, Map<String, Integer> queryParams) {
+    public ValidatableResponse getTodosResponse(int statusCode, Map<String, Integer> queryParams) {
         RequestSpecification request = given().spec(DefaultSpecification.requestSpec());
         queryParams.forEach(request::queryParam);
         return request
@@ -32,18 +33,25 @@ public class TodoRestService {
                 .spec(DefaultSpecification.responseSpec(statusCode));
     }
 
-    public <T> List<T> getListByType(String path, Class<T> type, int statusCode) {
-        return getAllResponse(statusCode)
+    public List<TodoModel> getListTodo() {
+        return getTodosResponse(HttpStatus.SC_OK)
                 .extract()
                 .jsonPath()
-                .getList(path, type);
+                .getList("$", TodoModel.class);
     }
 
-    public <T> List<T> getListByType(String path, Class<T> type, int statusCode, Map<String, Integer> queryParams) {
-        return getAllResponse(statusCode, queryParams)
+    public List<Long> getListId() {
+        return getTodosResponse(HttpStatus.SC_OK)
                 .extract()
                 .jsonPath()
-                .getList(path, type);
+                .getList("id", Long.class);
+    }
+
+    public List<TodoModel> getListTodoWithParameters(int statusCode, Map<String, Integer> queryParams) {
+        return getTodosResponse(statusCode, queryParams)
+                .extract()
+                .jsonPath()
+                .getList("$", TodoModel.class);
     }
 
     public ValidatableResponse post(TodoModel todoModel, int statusCode) {

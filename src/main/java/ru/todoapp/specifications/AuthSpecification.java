@@ -1,19 +1,23 @@
-package ru.todoApp.specifications;
+package ru.todoapp.specifications;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import ru.todoApp.endPoints.TodoApiEndPoints;
-import ru.todoApp.utils.Props;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import ru.todoapp.endpoints.TodoApiEndPoints;
 
+import static ru.todoapp.utils.Props.getStringProperty;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthSpecification {
     public static RequestSpecification requestSpec() {
         return new RequestSpecBuilder()
                 .setAuth(RestAssured.preemptive().basic(
-                        Props.getStringProperty("login"),
-                        Props.getStringProperty("password")
+                        getStringProperty("login"),
+                        getStringProperty("password")
                 ))
                 .setContentType(ContentType.JSON)
                 .setBasePath(TodoApiEndPoints.TODOS)

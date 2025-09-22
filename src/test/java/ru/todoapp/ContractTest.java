@@ -1,10 +1,10 @@
-package ru.todoApp;
+package ru.todoapp;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.todoApp.services.TodoRestService;
+import ru.todoapp.services.TodoRestService;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
@@ -16,7 +16,7 @@ public class ContractTest extends BaseTest {
     @DisplayName("Verify JSON schema for todo list")
     public void shouldBeCorrectGetTodoResponseScheme() {
         log.info("Check JSON contract");
-        todoRestService.getAllResponse(HttpStatus.SC_OK)
+        todoRestService.getTodosResponse(HttpStatus.SC_OK)
                 .body(matchesJsonSchemaInClasspath("todoResponseSchema.json"));
     }
 }

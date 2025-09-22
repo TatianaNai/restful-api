@@ -1,4 +1,4 @@
-package ru.todoApp.models;
+package ru.todoapp.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
