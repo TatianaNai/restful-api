@@ -10,7 +10,6 @@ import ru.todoapp.services.TodoRestService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.todoapp.utils.Props.*;
 import static ru.todoapp.utils.RandomGenerator.*;
 
 @Slf4j
@@ -20,40 +19,34 @@ public class UpdateTodoTest extends BaseTest {
     @Test
     @DisplayName("Update existing todo")
     public void shouldHaveCorrectUpdateExistingTodo() {
-        log.info("Add todo");
-        long todoId = generateId();
-        TodoModel todo = new TodoModel(todoId,
-                randomStringWithLength(getIntProperty("textLength")),
+        long todoIdBeforeUpdate = generateId();
+        TodoModel todoBeforeUpdate = new TodoModel(todoIdBeforeUpdate,
+                randomStringWithLength(randomIntWithBorders(5, 100)),
                 randomBoolean());
-        todoRestService.post(todo, HttpStatus.SC_CREATED);
-        log.info("Todo to update: {}", todo);
+        todoRestService.post(todoBeforeUpdate, HttpStatus.SC_CREATED);
 
-        long updateTodoId = generateId();
-        TodoModel updateTodo = new TodoModel(updateTodoId,
+        long todoIdAfterUpdate = generateId();
+        TodoModel todoAfterUpdate = new TodoModel(todoIdAfterUpdate,
                 randomStringWithLength(12),
                 randomBoolean());
-        log.info("Todo for update: {}", updateTodo);
-        todoRestService.putById(updateTodo, todoId, HttpStatus.SC_OK);
+        todoRestService.putById(todoAfterUpdate, todoIdBeforeUpdate, HttpStatus.SC_OK);
 
         List<TodoModel> todosAfterChanging = todoRestService.getListTodo();
         log.info("Check if todo was updated");
         assertAll(
-                () -> assertTrue(todosAfterChanging.contains(updateTodo), "Updated todo :" + updateTodo + " is not in the list of all todos"),
-                () -> assertFalse(todosAfterChanging.contains(todo), "Todo before changing: " + todo + " is still in the list of all todos")
+                () -> assertTrue(todosAfterChanging.contains(todoAfterUpdate), "Todo after update:" + todoAfterUpdate + " is not in the list of all todos"),
+                () -> assertFalse(todosAfterChanging.contains(todoBeforeUpdate), "Todo before update: " + todoBeforeUpdate + " is still in the list of all todos")
         );
-        log.info("Delete todo with id {}", todoId);
-        removeId(todoId);
-        log.info("Delete todo with id {}", updateTodoId);
-        removeId(updateTodoId);
+        removeId(todoIdBeforeUpdate);
+        removeId(todoIdAfterUpdate);
     }
 
     @Test
     @DisplayName("Update not existing todo. Negative test")
     public void shouldNotAllowUpdateNotExistingTodo() {
         TodoModel todo = new TodoModel(generateId(),
-                randomStringWithLength(getIntProperty("textLength")),
+                randomStringWithLength(randomIntWithBorders(5, 100)),
                 randomBoolean());
-        log.info("Not existed todo for update: {}", todo);
         todoRestService.putById(todo, todo.getId(), HttpStatus.SC_NOT_FOUND);
     }
 }

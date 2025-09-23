@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import ru.todoapp.models.TodoModel;
 import ru.todoapp.services.TodoRestService;
 
-import static ru.todoapp.utils.Props.*;
 import static ru.todoapp.utils.RandomGenerator.*;
 
 @Slf4j
@@ -20,10 +19,10 @@ public class PostPerformanceTest extends BaseTest {
         long minTime = Long.MAX_VALUE;
         long maxTime = 0;
 
-        for (int i = 0; i < getIntProperty("repetitionsForPostPerformance"); i++) {
+        for (int i = 0; i < randomIntWithBorders(5, 20); i++) {
             long todoId = generateId();
             TodoModel todo = new TodoModel(todoId,
-                    randomStringWithLength(getIntProperty("textLength")),
+                    randomStringWithLength(randomIntWithBorders(5, 100)),
                     randomBoolean());
             long responseTime = todoRestService.post(todo, HttpStatus.SC_CREATED)
                     .extract()

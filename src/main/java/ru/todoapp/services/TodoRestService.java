@@ -2,6 +2,7 @@ package ru.todoapp.services;
 
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import ru.todoapp.models.TodoModel;
 import ru.todoapp.specifications.AuthSpecification;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
+@Slf4j
 public class TodoRestService {
 
     public ValidatableResponse getTodosResponse(int statusCode) {
@@ -65,6 +67,7 @@ public class TodoRestService {
     }
 
     public void putById(TodoModel todoModel, long id, int statusCode) {
+        log.info("Update todo with id {}", id);
         given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
@@ -75,6 +78,7 @@ public class TodoRestService {
     }
 
     public void deleteById(long id, int statusCode) {
+        log.info("Delete todo with id {}", id);
         given()
                 .spec(AuthSpecification.requestSpec())
                 .when()

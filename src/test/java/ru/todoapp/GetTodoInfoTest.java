@@ -8,28 +8,29 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.todoapp.services.TodoRestService;
-import ru.todoapp.utils.RandomGenerator;
+import ru.todoapp.services.TodoService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.todoapp.utils.Props.getIntProperty;
 import static ru.todoapp.utils.RandomGenerator.*;
 
 @Isolated
 @Slf4j
 public class GetTodoInfoTest extends BaseTest {
     private final TodoRestService todoRestService = new TodoRestService();
+    private final TodoService todoService = new TodoService();
+    private static final int AMOUNT_TODOS = randomIntWithBorders(5, 11);
 
     static Stream<Arguments> parameterProvider() {
         return Stream.of(
                 Arguments.of(randomIntWithBorders(-100, 0), HttpStatus.SC_BAD_REQUEST),
                 Arguments.of(0, HttpStatus.SC_OK),
-                Arguments.of(randomIntWithBorders(1, getIntProperty("amountTodos")), HttpStatus.SC_OK),
-                Arguments.of(getIntProperty("amountTodos"), HttpStatus.SC_OK),
-                Arguments.of(randomIntWithBorders(getIntProperty("amountTodos") + 1, 100), HttpStatus.SC_OK)
+                Arguments.of(randomIntWithBorders(1, AMOUNT_TODOS), HttpStatus.SC_OK),
+                Arguments.of(AMOUNT_TODOS, HttpStatus.SC_OK),
+                Arguments.of(randomIntWithBorders(AMOUNT_TODOS + 1, 100), HttpStatus.SC_OK)
         );
     }
 
@@ -37,13 +38,10 @@ public class GetTodoInfoTest extends BaseTest {
     @MethodSource("parameterProvider")
     @DisplayName("Check amount of todos with parameter offset")
     public void shouldReturnCorrectAmountOfTodosWithOffset(int offset, int statusCode) {
-        log.info("Add todos");
-        List<Long> todoIds = generateTodosWithAmount(getIntProperty("amountTodos"));
+        List<Long> todoIds = todoService.createTodosWithAmount(AMOUNT_TODOS);
 
-        int amountOfAllTodo = todoRestService.getListTodo().size();
-        log.info("Total amount of todo: {}", amountOfAllTodo);
         if (offset > 0) {
-            int expectedAmountOfTodo = Math.max(amountOfAllTodo - offset, 0);
+            int expectedAmountOfTodo = Math.max(getAmountOfAllTodo() - offset, 0);
             log.info("Expected amount of todo in response with offset parameter: {}", expectedAmountOfTodo);
             int amountOfTodoWithOffset = todoRestService
                     .getListTodoWithParameters(statusCode, Map.of("offset", offset))
@@ -54,21 +52,17 @@ public class GetTodoInfoTest extends BaseTest {
             todoRestService.getTodosResponse(statusCode, Map.of("offset", offset));
         }
 
-        log.info("Delete created todos");
-        todoIds.forEach(RandomGenerator::removeId);
+        removeIdsByList(todoIds);
     }
 
     @ParameterizedTest
     @MethodSource("parameterProvider")
     @DisplayName("Check amount of todos with parameter limit")
     public void shouldReturnCorrectAmountOfTodosWithLimit(int limit, int statusCode) {
-        log.info("Add todos");
-        List<Long> todoIds = generateTodosWithAmount(getIntProperty("amountTodos"));
+        List<Long> todoIds = todoService.createTodosWithAmount(AMOUNT_TODOS);
 
-        int amountOfAllTodo = todoRestService.getListTodo().size();
-        log.info("Total amount of todo: {}", amountOfAllTodo);
         if (limit > 0) {
-            int expectedAmountOfTodo = Math.min(limit, amountOfAllTodo);
+            int expectedAmountOfTodo = Math.min(limit, getAmountOfAllTodo());
             log.info("Expected amount of todo in response with limit parameter: {}", expectedAmountOfTodo);
             int amountOfTodoWithLimit = todoRestService
                     .getListTodoWithParameters(statusCode, Map.of("limit", limit))
@@ -79,7 +73,12 @@ public class GetTodoInfoTest extends BaseTest {
             todoRestService.getTodosResponse(statusCode, Map.of("limit", limit));
         }
 
-        log.info("Delete created todos");
-        todoIds.forEach(RandomGenerator::removeId);
+        removeIdsByList(todoIds);
+    }
+
+    private int getAmountOfAllTodo() {
+        int amountOfAllTodo = todoRestService.getListTodo().size();
+        log.info("Total amount of todo: {}", amountOfAllTodo);
+        return amountOfAllTodo;
     }
 }

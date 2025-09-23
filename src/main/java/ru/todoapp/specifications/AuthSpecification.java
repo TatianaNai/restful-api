@@ -9,15 +9,15 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.todoapp.endpoints.TodoApiEndPoints;
 
-import static ru.todoapp.utils.Props.getStringProperty;
+import static ru.todoapp.utils.Props.getProperty;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthSpecification {
     public static RequestSpecification requestSpec() {
         return new RequestSpecBuilder()
                 .setAuth(RestAssured.preemptive().basic(
-                        getStringProperty("login"),
-                        getStringProperty("password")
+                        getProperty("login"),
+                        getProperty("password")
                 ))
                 .setContentType(ContentType.JSON)
                 .setBasePath(TodoApiEndPoints.TODOS)

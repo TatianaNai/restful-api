@@ -7,11 +7,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.todoapp.models.TodoModel;
+import ru.todoapp.services.TodoIdService;
 import ru.todoapp.services.TodoRestService;
 
 import java.util.stream.Stream;
 
-import static ru.todoapp.utils.Props.getIntProperty;
 import static ru.todoapp.utils.RandomGenerator.*;
 
 
@@ -21,16 +21,16 @@ public class AddTodoTest extends BaseTest {
     static Stream<Arguments> incorrectTodoProvider() {
         return Stream.of(
                 Arguments.of(TodoModel.builder()
-                        .text(randomStringWithLength(getIntProperty("textLength")))
+                        .text(randomStringWithLength(randomIntWithBorders(5, 100)))
                         .completed(randomBoolean())
                         .build()),
                 Arguments.of(TodoModel.builder()
-                        .id(generateId())
+                        .id(TodoIdService.INSTANCE.generateId())
                         .completed(randomBoolean())
                         .build()),
                 Arguments.of(TodoModel.builder()
-                        .id(generateId())
-                        .text(randomStringWithLength(getIntProperty("textLength")))
+                        .id(TodoIdService.INSTANCE.generateId())
+                        .text(randomStringWithLength(randomIntWithBorders(5, 100)))
                         .build())
         );
     }
@@ -40,7 +40,7 @@ public class AddTodoTest extends BaseTest {
     public void shouldHaveCorrectAddTodo() {
         long randomId = generateId();
         TodoModel todo = new TodoModel(randomId,
-                randomStringWithLength(getIntProperty("textLength")),
+                randomStringWithLength(randomIntWithBorders(5, 100)),
                 randomBoolean());
         todoRestService.post(todo, HttpStatus.SC_CREATED);
 

@@ -20,12 +20,8 @@ public class Props {
         }
     }
 
-    public static String getStringProperty(String key) {
+    public static String getProperty(String key) {
         String property = System.getProperty(key);
         return property == null ? PROPERTIES.getProperty(key) : property;
-    }
-
-    public static int getIntProperty(String key) {
-        return Integer.parseInt(PROPERTIES.getProperty(key));
     }
 }
