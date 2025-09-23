@@ -1,20 +1,40 @@
+# Todo API tests
+
 Реализован фреймворк для проверки API приложения TODO manager. Написаны автоматизированные тесты, проверяющие CRUD-операции (GET в т.ч. с параметрами limit и offset, POST, DELETE, PUT).  
-Тесты написаны с помощью фреймворков Rest Assured, JUnit 5.  
+Тесты написаны с помощью фреймворков Rest Assured, JUnit 5.
 
 Реализованные тесты:  
-•	GET /todos  
+• GET /todos  
 Проверка получения списка задач  
 Проверка параметров offset и limit  
 Проверка контракта JSON  
-•	POST /todos  
+• POST /todos  
 Создание новой задачи  
 Негативные проверки (отсутствие обязательных параметров)  
-•	PUT /todos/{id}  
+• PUT /todos/{id}  
 Обновление существующей задачи  
 Негативные проверки (обновление не существующей задачи)  
-•	DELETE /todos/{id}  
+• DELETE /todos/{id}  
 Удаление существующей задачи  
 Негативные проверки (удаление не существующей задачи)  
 
-Для запуска тестов через Maven необходимо прописать:  
-mvn clean test -Dlogin=… -Dpassword=…  
+## Запуск проета
+
+Клонировать репозиторий
+
+```bash
+  git clone https://github.com/TatianaNai/restful-api.git
+```
+
+Переключиться на ветку
+
+```bash
+  git checkout JIRA-17091
+```
+
+Запустить тесты
+
+```bash
+  mvn clean test -Dlogin=… -Dpassword=…
+```
+
