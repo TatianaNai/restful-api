@@ -30,7 +30,7 @@ public class UpdateTodoTest extends BaseTest {
         Todo todoAfterUpdate = new Todo(todoIdAfterUpdate,
                 randomStringWithLength(12),
                 randomBoolean());
-        Response<Void> response =  todoApiService.put(todoIdBeforeUpdate, todoAfterUpdate);
+        Response<Void> response = todoApiService.put(todoIdBeforeUpdate, todoAfterUpdate);
         assertAll(
                 () -> assertTrue(response.isSuccessful(), "Request was not successful"),
                 () -> assertEquals(StatusCodes.OK, response.code(), "Expected code: " + StatusCodes.OK + " but was: " + response.code())
@@ -52,7 +52,7 @@ public class UpdateTodoTest extends BaseTest {
         Todo todo = new Todo(generateId(),
                 randomStringWithLength(randomIntWithBorders(5, 100)),
                 randomBoolean());
-        Response<Void> response =  todoApiService.put(todo.getId(), todo);
+        Response<Void> response = todoApiService.put(todo.getId(), todo);
         assertAll(
                 () -> assertFalse(response.isSuccessful(), "Request was successful"),
                 () -> assertEquals(StatusCodes.NOT_FOUND, response.code(), "Expected code: " + StatusCodes.NOT_FOUND + " but was: " + response.code())

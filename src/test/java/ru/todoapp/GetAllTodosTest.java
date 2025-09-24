@@ -22,7 +22,7 @@ public class GetAllTodosTest extends BaseTest {
     public void shouldHaveCorrectGetAllTodoList() {
         List<Long> todoIds = todoService.createTodosWithAmount(randomIntWithBorders(5, 11));
 
-        Response<List<Todo>> response =  todoApiService.get();
+        Response<List<Todo>> response = todoApiService.get();
         assertAll(
                 () -> assertTrue(response.isSuccessful(), "Request was not successful"),
                 () -> assertEquals(StatusCodes.OK, response.code(), "Expected code: " + StatusCodes.OK + " but was: " + response.code())

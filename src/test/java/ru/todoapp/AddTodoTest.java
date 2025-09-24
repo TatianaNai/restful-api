@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.todoapp.utils.RandomGenerator.*;
 
-public class AddTodoTest extends BaseTest{
+public class AddTodoTest extends BaseTest {
     private final TodoApiServiceImpl todoApiService = new TodoApiServiceImpl();
 
     static Stream<Arguments> incorrectTodoProvider() {
@@ -43,7 +43,7 @@ public class AddTodoTest extends BaseTest{
         Todo todo = new Todo(randomId,
                 randomStringWithLength(randomIntWithBorders(5, 100)),
                 randomBoolean());
-        Response<Void> response =  todoApiService.post(todo);
+        Response<Void> response = todoApiService.post(todo);
         assertAll(
                 () -> assertTrue(response.isSuccessful(), "Request was not successful"),
                 () -> assertEquals(StatusCodes.CREATED, response.code(), "Expected code: " + StatusCodes.CREATED + " but was: " + response.code())
@@ -56,7 +56,7 @@ public class AddTodoTest extends BaseTest{
     @MethodSource("incorrectTodoProvider")
     @DisplayName("Add todo with missing parameter. Negative test")
     public void shouldNotAllowAddTodoWithMissingParameter(Todo todo) {
-        Response<Void> response =  todoApiService.post(todo);
+        Response<Void> response = todoApiService.post(todo);
         assertAll(
                 () -> assertFalse(response.isSuccessful(), "Request was successful"),
                 () -> assertEquals(StatusCodes.BAD_REQUEST, response.code(), "Expected code: " + StatusCodes.BAD_REQUEST + " but was: " + response.code())
