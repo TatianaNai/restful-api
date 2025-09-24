@@ -16,35 +16,20 @@ import java.util.Objects;
 import static ru.todoapp.utils.Props.getProperty;
 
 public class TodoApiServiceImpl {
-    public TodoApiService getTodoService() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new HeaderInterceptor())
-                .addInterceptor(logging)
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getProperty("baseUri")
-                        .replace("${port}", getProperty("port")))
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(TodoApiService.class);
-    }
 
     @SneakyThrows
     public Response<List<Todo>> get() {
-        return getTodoService().listTodos().execute();
+        return getTodoApiService().listTodos().execute();
     }
 
     @SneakyThrows
     public Response<List<Todo>> getWithLimit(int limit) {
-        return getTodoService().listTodosWithLimit(limit).execute();
+        return getTodoApiService().listTodosWithLimit(limit).execute();
     }
 
     @SneakyThrows
     public Response<List<Todo>> getWithOffset(int offset) {
-        return getTodoService().listTodosWithOffset(offset).execute();
+        return getTodoApiService().listTodosWithOffset(offset).execute();
     }
 
     @SneakyThrows
@@ -59,16 +44,30 @@ public class TodoApiServiceImpl {
 
     @SneakyThrows
     public Response<Void> post(Todo todo) {
-        return getTodoService().createTodo(todo).execute();
+        return getTodoApiService().createTodo(todo).execute();
     }
 
     @SneakyThrows
     public Response<Void> put(Long id, Todo todo) {
-        return getTodoService().updateTodo(id, todo).execute();
+        return getTodoApiService().updateTodo(id, todo).execute();
     }
 
     @SneakyThrows
     public Response<Void> delete(Long id) {
-        return getTodoService().deleteTodo(id, TodoHeaders.AUTHORIZATION).execute();
+        return getTodoApiService().deleteTodo(id, TodoHeaders.AUTHORIZATION).execute();
+    }
+
+    private TodoApiService getTodoApiService() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HeaderInterceptor())
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getProperty("baseUri")
+                        .replace("${port}", getProperty("port")))
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(TodoApiService.class);
     }
 }

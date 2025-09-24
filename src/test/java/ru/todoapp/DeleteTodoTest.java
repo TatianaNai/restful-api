@@ -3,7 +3,6 @@ package ru.todoapp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import retrofit2.Response;
 import ru.todoapp.constants.StatusCodes;
 import ru.todoapp.models.Todo;
 import ru.todoapp.services.TodoApiServiceImpl;
@@ -26,11 +25,7 @@ public class DeleteTodoTest extends BaseTest {
                 randomBoolean());
         todoApiService.post(todo);
 
-        Response<Void> response = todoApiService.delete(todoId);
-        assertAll(
-                () -> assertTrue(response.isSuccessful(), "Request was not successful"),
-                () -> assertEquals(StatusCodes.NO_CONTENT, response.code(), "Expected code: " + StatusCodes.NO_CONTENT + " but was: " + response.code())
-        );
+        assertSuccessfulResponse(todoApiService.delete(todoId), StatusCodes.NO_CONTENT);
 
         log.info("Check if todo is deleted");
         List<Todo> todosAfterChanging = todoApiService.getListTodo();
@@ -40,10 +35,6 @@ public class DeleteTodoTest extends BaseTest {
     @Test
     @DisplayName("Delete not existing todo. Negative test")
     public void shouldNotAllowDeleteNotExistingTodo() {
-        Response<Void> response = todoApiService.delete(generateId());
-        assertAll(
-                () -> assertFalse(response.isSuccessful(), "Request was successful"),
-                () -> assertEquals(StatusCodes.NOT_FOUND, response.code(), "Expected code: " + StatusCodes.NOT_FOUND + " but was: " + response.code())
-        );
+        assertUnsuccessfulResponse(todoApiService.delete(generateId()), StatusCodes.NOT_FOUND);
     }
 }

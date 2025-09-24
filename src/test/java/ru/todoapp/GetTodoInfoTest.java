@@ -44,9 +44,9 @@ public class GetTodoInfoTest extends BaseTest {
         if (offset >= 0) {
             int expectedAmountOfTodo = Math.max(getAmountOfAllTodo() - offset, 0);
             log.info("Expected amount of todo in response with offset parameter: {}", expectedAmountOfTodo);
-            assertsWithPositiveParameter(todoApiService.getWithOffset(offset), expectedAmountOfTodo);
+            assertResponseWithPositiveParameter(todoApiService.getWithOffset(offset), expectedAmountOfTodo);
         } else {
-            assertsWithNegativeParameter(todoApiService.getWithOffset(offset));
+            assertUnsuccessfulResponse(todoApiService.getWithOffset(offset), StatusCodes.BAD_REQUEST);
         }
 
         removeIdsByList(todoIds);
@@ -61,9 +61,9 @@ public class GetTodoInfoTest extends BaseTest {
         if (limit >= 0) {
             int expectedAmountOfTodo = Math.min(limit, getAmountOfAllTodo());
             log.info("Expected amount of todo in response with limit parameter: {}", expectedAmountOfTodo);
-            assertsWithPositiveParameter(todoApiService.getWithLimit(limit), expectedAmountOfTodo);
+            assertResponseWithPositiveParameter(todoApiService.getWithLimit(limit), expectedAmountOfTodo);
         } else {
-            assertsWithNegativeParameter(todoApiService.getWithLimit(limit));
+            assertUnsuccessfulResponse(todoApiService.getWithLimit(limit), StatusCodes.BAD_REQUEST);
         }
 
         removeIdsByList(todoIds);
@@ -75,7 +75,7 @@ public class GetTodoInfoTest extends BaseTest {
         return amountOfAllTodo;
     }
 
-    private void assertsWithPositiveParameter(Response<List<Todo>> response, int expectedAmountOfTodo) {
+    private void assertResponseWithPositiveParameter(Response<List<Todo>> response, int expectedAmountOfTodo) {
         assertAll(
                 () -> assertTrue(response.isSuccessful(), "Request was not successful"),
                 () -> assertEquals(StatusCodes.OK, response.code(), "Expected code: " + StatusCodes.OK + " but was: " + response.code()),
@@ -84,12 +84,5 @@ public class GetTodoInfoTest extends BaseTest {
         int amountOfTodoWithParameter = response.body().size();
         log.info("Amount of todo in response with parameter: {}", amountOfTodoWithParameter);
         assertEquals(expectedAmountOfTodo, amountOfTodoWithParameter, "Amount of todos: " + amountOfTodoWithParameter + " is not equal to expected amount: " + expectedAmountOfTodo);
-    }
-
-    private void assertsWithNegativeParameter(Response<List<Todo>> response) {
-        assertAll(
-                () -> assertFalse(response.isSuccessful(), "Request was successful"),
-                () -> assertEquals(StatusCodes.BAD_REQUEST, response.code(), "Expected code: " + StatusCodes.BAD_REQUEST + " but was: " + response.code())
-        );
     }
 }

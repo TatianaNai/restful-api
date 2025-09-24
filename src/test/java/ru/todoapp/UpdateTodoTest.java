@@ -3,7 +3,6 @@ package ru.todoapp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import retrofit2.Response;
 import ru.todoapp.constants.StatusCodes;
 import ru.todoapp.models.Todo;
 import ru.todoapp.services.TodoApiServiceImpl;
@@ -30,11 +29,7 @@ public class UpdateTodoTest extends BaseTest {
         Todo todoAfterUpdate = new Todo(todoIdAfterUpdate,
                 randomStringWithLength(12),
                 randomBoolean());
-        Response<Void> response = todoApiService.put(todoIdBeforeUpdate, todoAfterUpdate);
-        assertAll(
-                () -> assertTrue(response.isSuccessful(), "Request was not successful"),
-                () -> assertEquals(StatusCodes.OK, response.code(), "Expected code: " + StatusCodes.OK + " but was: " + response.code())
-        );
+        assertSuccessfulResponse(todoApiService.put(todoIdBeforeUpdate, todoAfterUpdate), StatusCodes.OK);
 
         List<Todo> todosAfterChanging = todoApiService.getListTodo();
         log.info("Check if todo was updated");
@@ -52,10 +47,6 @@ public class UpdateTodoTest extends BaseTest {
         Todo todo = new Todo(generateId(),
                 randomStringWithLength(randomIntWithBorders(5, 100)),
                 randomBoolean());
-        Response<Void> response = todoApiService.put(todo.getId(), todo);
-        assertAll(
-                () -> assertFalse(response.isSuccessful(), "Request was successful"),
-                () -> assertEquals(StatusCodes.NOT_FOUND, response.code(), "Expected code: " + StatusCodes.NOT_FOUND + " but was: " + response.code())
-        );
+        assertUnsuccessfulResponse(todoApiService.put(todo.getId(), todo), StatusCodes.NOT_FOUND);
     }
 }

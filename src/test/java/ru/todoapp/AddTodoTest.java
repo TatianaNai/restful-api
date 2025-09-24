@@ -5,7 +5,6 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import retrofit2.Response;
 import ru.todoapp.constants.StatusCodes;
 import ru.todoapp.models.Todo;
 import ru.todoapp.services.TodoApiServiceImpl;
@@ -13,7 +12,6 @@ import ru.todoapp.services.TodoIdService;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static ru.todoapp.utils.RandomGenerator.*;
 
 public class AddTodoTest extends BaseTest {
@@ -39,27 +37,20 @@ public class AddTodoTest extends BaseTest {
     @RepeatedTest(3)
     @DisplayName("Add todo")
     public void shouldHaveCorrectAddTodo() {
-        long randomId = generateId();
-        Todo todo = new Todo(randomId,
+        long todoId = generateId();
+        Todo todo = new Todo(todoId,
                 randomStringWithLength(randomIntWithBorders(5, 100)),
                 randomBoolean());
-        Response<Void> response = todoApiService.post(todo);
-        assertAll(
-                () -> assertTrue(response.isSuccessful(), "Request was not successful"),
-                () -> assertEquals(StatusCodes.CREATED, response.code(), "Expected code: " + StatusCodes.CREATED + " but was: " + response.code())
-        );
 
-        removeId(randomId);
+        assertSuccessfulResponse(todoApiService.post(todo), StatusCodes.CREATED);
+
+        removeId(todoId);
     }
 
     @ParameterizedTest
     @MethodSource("incorrectTodoProvider")
     @DisplayName("Add todo with missing parameter. Negative test")
     public void shouldNotAllowAddTodoWithMissingParameter(Todo todo) {
-        Response<Void> response = todoApiService.post(todo);
-        assertAll(
-                () -> assertFalse(response.isSuccessful(), "Request was successful"),
-                () -> assertEquals(StatusCodes.BAD_REQUEST, response.code(), "Expected code: " + StatusCodes.BAD_REQUEST + " but was: " + response.code())
-        );
+        assertUnsuccessfulResponse(todoApiService.post(todo), StatusCodes.BAD_REQUEST);
     }
 }
