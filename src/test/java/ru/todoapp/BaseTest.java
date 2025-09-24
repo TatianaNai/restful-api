@@ -15,7 +15,8 @@ public abstract class BaseTest {
     @BeforeEach
     public void setFilter() {
         RestAssured.filters(new AllureRestAssured());
-        RestAssured.baseURI = getProperty("baseUri");
+        RestAssured.baseURI = getProperty("baseUri")
+                .replace("${port}", getProperty("port"));
     }
 
     public long generateId() {

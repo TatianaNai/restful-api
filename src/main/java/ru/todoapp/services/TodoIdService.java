@@ -1,12 +1,10 @@
 package ru.todoapp.services;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Slf4j
 public enum TodoIdService {
     INSTANCE;
     private static final List<Long> testIds = new CopyOnWriteArrayList<>();
