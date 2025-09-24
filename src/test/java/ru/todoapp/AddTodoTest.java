@@ -58,7 +58,7 @@ public class AddTodoTest extends BaseTest{
     public void shouldNotAllowAddTodoWithMissingParameter(Todo todo) {
         Response<Void> response =  todoApiService.post(todo);
         assertAll(
-                () -> assertFalse(response.isSuccessful(), "Request was not successful"),
+                () -> assertFalse(response.isSuccessful(), "Request was successful"),
                 () -> assertEquals(StatusCodes.BAD_REQUEST, response.code(), "Expected code: " + StatusCodes.BAD_REQUEST + " but was: " + response.code())
         );
     }

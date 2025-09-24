@@ -21,7 +21,7 @@ public interface TodoApiService {
     Call<Void> createTodo(@Body Todo todo);
 
     @PUT(TodoApiEndpoints.TODOS_WITH_ID)
-    Call<Void> updateTodo(@Path("id") long id );
+    Call<Void> updateTodo(@Path("id") long id, @Body Todo todo );
 
     @DELETE(TodoApiEndpoints.TODOS_WITH_ID)
     Call<Void> deleteTodo(@Path("id") long id, @Header("Authorization") String auth);

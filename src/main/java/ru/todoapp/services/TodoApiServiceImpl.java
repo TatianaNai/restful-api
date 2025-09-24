@@ -11,6 +11,7 @@ import ru.todoapp.interceptors.HeaderInterceptor;
 import ru.todoapp.models.Todo;
 
 import java.util.List;
+import java.util.Objects;
 
 import static ru.todoapp.utils.Props.getProperty;
 
@@ -37,8 +38,33 @@ public class TodoApiServiceImpl {
     }
 
     @SneakyThrows
+    public Response<List<Todo>> getWithLimit(int limit) {
+        return getTodoService().listTodosWithLimit(limit).execute();
+    }
+
+    @SneakyThrows
+    public Response<List<Todo>> getWithOffset(int offset) {
+        return getTodoService().listTodosWithOffset(offset).execute();
+    }
+
+    @SneakyThrows
+    public List<Long> getListId() {
+        return Objects.requireNonNull(get().body()).stream().map(Todo::getId).toList();
+    }
+
+    @SneakyThrows
+    public List<Todo> getListTodo() {
+        return Objects.requireNonNull(get().body()).stream().toList();
+    }
+
+    @SneakyThrows
     public Response<Void> post(Todo todo) {
         return getTodoService().createTodo(todo).execute();
+    }
+
+    @SneakyThrows
+    public Response<Void> put(Long id, Todo todo) {
+        return getTodoService().updateTodo(id, todo).execute();
     }
 
     @SneakyThrows
