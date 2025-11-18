@@ -1,27 +1,30 @@
 package ru.todoapp.services;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public enum TodoIdService {
-    INSTANCE;
-    private static final List<Long> testIds = new CopyOnWriteArrayList<>();
+@Service
+@RequiredArgsConstructor
+public class TodoIdService {
+    private final TodoApiServiceImpl todoApiService;
+    private static final List<Long> TEST_IDS = new CopyOnWriteArrayList<>();
 
     public synchronized long generateId() {
-        TodoApiServiceImpl todoApiService = new TodoApiServiceImpl();
         List<Long> todosIds = todoApiService.getListId();
         long randomValue = (long) (Math.random() * ((100_000_000) + 1));
 
-        if (todosIds.contains(randomValue) || testIds.contains(randomValue)) {
+        if (todosIds.contains(randomValue) || TEST_IDS.contains(randomValue)) {
             return generateId();
         }
-        testIds.add(randomValue);
+        TEST_IDS.add(randomValue);
         return randomValue;
     }
 
     public synchronized void removeId(long id) {
-        TodoApiServiceImpl todoApiService = new TodoApiServiceImpl();
-        testIds.remove(id);
+        TEST_IDS.remove(id);
 
         if (todoApiService.getListId().stream().anyMatch(toDoId -> toDoId == id)) {
             todoApiService.delete(id);

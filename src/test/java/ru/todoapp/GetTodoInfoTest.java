@@ -6,6 +6,8 @@ import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import retrofit2.Response;
 import ru.todoapp.constants.StatusCodes;
 import ru.todoapp.models.Todo;
@@ -20,9 +22,13 @@ import static ru.todoapp.utils.RandomGenerator.*;
 
 @Isolated
 @Slf4j
+@SpringBootTest
 public class GetTodoInfoTest extends BaseTest {
-    private final TodoApiServiceImpl todoApiService = new TodoApiServiceImpl();
-    private final TodoService todoService = new TodoService();
+    @Autowired
+    private TodoApiServiceImpl todoApiService;
+    @Autowired
+    private TodoService todoService;
+
     private static final int AMOUNT_TODOS = randomIntWithBorders(5, 11);
 
     static Stream<Arguments> parameterProvider() {

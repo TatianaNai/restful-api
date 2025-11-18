@@ -1,5 +1,6 @@
 package ru.todoapp;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import retrofit2.Response;
 import ru.todoapp.services.TodoIdService;
 
@@ -8,12 +9,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class BaseTest {
+    @Autowired
+    private TodoIdService todoIdService;
+
     protected long generateId() {
-        return TodoIdService.INSTANCE.generateId();
+        return todoIdService.generateId();
     }
 
     protected void removeId(long id) {
-        TodoIdService.INSTANCE.removeId(id);
+        todoIdService.removeId(id);
     }
 
     protected void removeIdsByList(List<Long> ids) {

@@ -3,6 +3,8 @@ package ru.todoapp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.todoapp.constants.StatusCodes;
 import ru.todoapp.models.Todo;
 import ru.todoapp.services.TodoApiServiceImpl;
@@ -13,8 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ru.todoapp.utils.RandomGenerator.*;
 
 @Slf4j
+@SpringBootTest
 public class UpdateTodoTest extends BaseTest {
-    private final TodoApiServiceImpl todoApiService = new TodoApiServiceImpl();
+    @Autowired
+    private TodoApiServiceImpl todoApiService;
 
     @Test
     @DisplayName("Update existing todo")
