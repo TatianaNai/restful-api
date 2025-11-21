@@ -27,7 +27,7 @@ public class TodoRestConfiguration {
     }
 
     @Bean
-    public TodoApiService todoApiService(OkHttpClient okHttpClient, @Value("${baseUri}") String baseUri) {
+    public TodoApiService todoApiService(OkHttpClient okHttpClient, @Value("${api.baseUri}") String baseUri) {
         return new Retrofit.Builder()
                 .baseUrl(baseUri)
                 .client(okHttpClient)

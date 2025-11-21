@@ -10,8 +10,8 @@ public class TodoHeaders {
     private final String login;
     private final String password;
 
-    public TodoHeaders(@Value("${login}") String login,
-                       @Value("${password}") String password) {
+    public TodoHeaders(@Value("${api.login}") String login,
+                       @Value("${api.password}") String password) {
         this.login = login;
         this.password = password;
     }
