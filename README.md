@@ -28,7 +28,7 @@
 Переключиться на ветку
 
 ```bash
-  git checkout JIRA-17111
+  git checkout JIRA-21111
 ```
 
 Запустить тесты
