@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.todoapp.interceptors.HeaderInterceptor;
-import ru.todoapp.services.TodoApiService;
+import ru.todoapp.rest.services.TodoApiService;
 
 @Configuration
 public class TodoRestConfiguration {

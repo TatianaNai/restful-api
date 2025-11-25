@@ -3,9 +3,7 @@ package ru.todoapp.arguments_providers;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.todoapp.models.Todo;
-import ru.todoapp.services.TodoIdService;
+import ru.todoapp.rest.models.TodoRequest;
 
 import java.util.stream.Stream;
 
@@ -17,19 +15,11 @@ public class TodoArgumentsProvider implements ArgumentsProvider {
 
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-        TodoIdService todoIdService = SpringExtension.getApplicationContext(context)
-                .getBean(TodoIdService.class);
         return Stream.of(
-                Arguments.of(Todo.builder()
-                        .text(randomStringWithLength(randomIntWithBorders(5, 100)))
+                Arguments.of(TodoRequest.builder()
                         .completed(randomBoolean())
                         .build()),
-                Arguments.of(Todo.builder()
-                        .id(todoIdService.generateId())
-                        .completed(randomBoolean())
-                        .build()),
-                Arguments.of(Todo.builder()
-                        .id(todoIdService.generateId())
+                Arguments.of(TodoRequest.builder()
                         .text(randomStringWithLength(randomIntWithBorders(5, 100)))
                         .build())
         );

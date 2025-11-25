@@ -1,4 +1,4 @@
-package ru.todoapp.constants;
+package ru.todoapp.rest.constants;
 
 public class StatusCodes {
     public static final int OK = 200;

@@ -1,4 +1,4 @@
-package ru.todoapp.headers;
+package ru.todoapp.rest.headers;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

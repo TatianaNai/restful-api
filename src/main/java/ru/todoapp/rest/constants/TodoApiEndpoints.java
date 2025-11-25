@@ -1,4 +1,4 @@
-package ru.todoapp.constants;
+package ru.todoapp.rest.constants;
 
 public class TodoApiEndpoints {
     public static final String TODOS = "todos";
