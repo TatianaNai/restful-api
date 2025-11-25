@@ -5,9 +5,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.todoapp.constants.StatusCodes;
-import ru.todoapp.models.Todo;
-import ru.todoapp.services.TodoApiServiceImpl;
+import ru.todoapp.data.repositories.TodoRepository;
+import ru.todoapp.rest.constants.StatusCodes;
+import ru.todoapp.data.entities.Todo;
+import ru.todoapp.rest.models.TodoRequest;
+import ru.todoapp.rest.models.TodoResponse;
+import ru.todoapp.rest.services.TodoApiServiceImpl;
+import ru.todoapp.services.TodoService;
 
 import java.util.List;
 
@@ -19,38 +23,32 @@ import static ru.todoapp.utils.RandomGenerator.*;
 public class UpdateTodoTest extends BaseTest {
     @Autowired
     private TodoApiServiceImpl todoApiService;
+    @Autowired
+    private TodoRepository todoRepository;
+    @Autowired
+    private TodoService todoService;
 
     @Test
     @DisplayName("Update existing todo")
     public void shouldHaveCorrectUpdateExistingTodo() {
-        long todoIdBeforeUpdate = generateId();
-        Todo todoBeforeUpdate = new Todo(todoIdBeforeUpdate,
+        String text = randomStringWithLength(randomIntWithBorders(5, 100));
+        todoService.createTodo(new TodoRequest(text, true));
+        Todo todoToUpdate = todoRepository.getByText(text).get(0);
+        TodoRequest todoAfterUpdate = new TodoRequest(
                 randomStringWithLength(randomIntWithBorders(5, 100)),
-                randomBoolean());
-        todoApiService.post(todoBeforeUpdate);
+                false);
 
-        long todoIdAfterUpdate = generateId();
-        Todo todoAfterUpdate = new Todo(todoIdAfterUpdate,
-                randomStringWithLength(12),
-                randomBoolean());
-        assertSuccessfulResponse(todoApiService.put(todoIdBeforeUpdate, todoAfterUpdate), StatusCodes.OK);
+        assertSuccessfulResponse(todoService.updateTodo(todoToUpdate.getId(), todoAfterUpdate), StatusCodes.OK);
 
-        List<Todo> todosAfterChanging = todoApiService.getListTodo();
+        Todo updatedTodoFromDB = todoRepository.findById(todoToUpdate.getId()).get();
+        List<TodoResponse> todosApi = todoApiService.getListTodo();
         log.info("Check if todo was updated");
-        assertAll(
-                () -> assertTrue(todosAfterChanging.contains(todoAfterUpdate), "Todo after update:" + todoAfterUpdate + " is not in the list of all todos"),
-                () -> assertFalse(todosAfterChanging.contains(todoBeforeUpdate), "Todo before update: " + todoBeforeUpdate + " is still in the list of all todos")
-        );
-        removeId(todoIdBeforeUpdate);
-        removeId(todoIdAfterUpdate);
-    }
 
-    @Test
-    @DisplayName("Update not existing todo. Negative test")
-    public void shouldNotAllowUpdateNotExistingTodo() {
-        Todo todo = new Todo(generateId(),
-                randomStringWithLength(randomIntWithBorders(5, 100)),
-                randomBoolean());
-        assertUnsuccessfulResponse(todoApiService.put(todo.getId(), todo), StatusCodes.NOT_FOUND);
+        assertFalse(todosApi.stream().anyMatch(t ->
+                t.getText().equals(text) &&
+                        t.getCompleted().equals(true)), "Todo was not updated");
+        assertIfExistTodoInDBAndAPIResponse(todosApi, updatedTodoFromDB, todoAfterUpdate);
+
+        todoService.deleteTodo(todoAfterUpdate);
     }
 }

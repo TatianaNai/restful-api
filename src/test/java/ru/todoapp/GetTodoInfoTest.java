@@ -2,6 +2,7 @@ package ru.todoapp;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -9,9 +10,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import retrofit2.Response;
-import ru.todoapp.constants.StatusCodes;
-import ru.todoapp.models.Todo;
-import ru.todoapp.services.TodoApiServiceImpl;
+import ru.todoapp.data.repositories.TodoRepository;
+import ru.todoapp.rest.constants.StatusCodes;
+import ru.todoapp.rest.models.TodoRequest;
+import ru.todoapp.rest.models.TodoResponse;
+import ru.todoapp.rest.services.TodoApiServiceImpl;
 import ru.todoapp.services.TodoService;
 
 import java.util.List;
@@ -26,6 +29,8 @@ import static ru.todoapp.utils.RandomGenerator.*;
 public class GetTodoInfoTest extends BaseTest {
     @Autowired
     private TodoApiServiceImpl todoApiService;
+    @Autowired
+    private TodoRepository todoRepository;
     @Autowired
     private TodoService todoService;
 
@@ -45,7 +50,7 @@ public class GetTodoInfoTest extends BaseTest {
     @MethodSource("parameterProvider")
     @DisplayName("Check amount of todos with parameter offset")
     public void shouldReturnCorrectAmountOfTodosWithOffset(int offset) {
-        List<Long> todoIds = todoService.createTodosWithAmount(AMOUNT_TODOS);
+        List<TodoRequest> todos = todoService.createTodosInAmount(AMOUNT_TODOS);
 
         if (offset >= 0) {
             int expectedAmountOfTodo = Math.max(getAmountOfAllTodo() - offset, 0);
@@ -55,14 +60,14 @@ public class GetTodoInfoTest extends BaseTest {
             assertUnsuccessfulResponse(todoApiService.getWithOffset(offset), StatusCodes.BAD_REQUEST);
         }
 
-        removeIdsByList(todoIds);
+        todos.forEach(todoService::deleteTodo);
     }
 
     @ParameterizedTest
     @MethodSource("parameterProvider")
     @DisplayName("Check amount of todos with parameter limit")
     public void shouldReturnCorrectAmountOfTodosWithLimit(int limit) {
-        List<Long> todoIds = todoService.createTodosWithAmount(AMOUNT_TODOS);
+        List<TodoRequest> todos = todoService.createTodosInAmount(AMOUNT_TODOS);
 
         if (limit >= 0) {
             int expectedAmountOfTodo = Math.min(limit, getAmountOfAllTodo());
@@ -72,16 +77,32 @@ public class GetTodoInfoTest extends BaseTest {
             assertUnsuccessfulResponse(todoApiService.getWithLimit(limit), StatusCodes.BAD_REQUEST);
         }
 
-        removeIdsByList(todoIds);
+        todos.forEach(todoService::deleteTodo);
+    }
+
+    @DisplayName("Get todos with the same name")
+    @Test
+    public void shouldHaveCorrectGetTodosWithOneName() {
+        String text = randomStringWithLength(randomIntWithBorders(5, 100));
+        int randomNumber = randomIntWithBorders(2, 5);
+        for(int i = 0; i < randomNumber; i++) {
+            todoService.createTodo(new TodoRequest(text, true));
+        }
+        int amountTodo = todoRepository.getByText(text).size();
+
+        assertEquals(randomNumber, amountTodo);
     }
 
     private int getAmountOfAllTodo() {
         int amountOfAllTodo = todoApiService.getListTodo().size();
+        if (amountOfAllTodo != todoRepository.findAll().size()) {
+            throw new RuntimeException("Amount of todo's in DB is not equal to amount todo in app");
+        }
         log.info("Total amount of todo: {}", amountOfAllTodo);
         return amountOfAllTodo;
     }
 
-    private void assertResponseWithPositiveParameter(Response<List<Todo>> response, int expectedAmountOfTodo) {
+    private void assertResponseWithPositiveParameter(Response<List<TodoResponse>> response, int expectedAmountOfTodo) {
         assertAll(
                 () -> assertTrue(response.isSuccessful(), "Request was not successful"),
                 () -> assertEquals(StatusCodes.OK, response.code(), "Expected code: " + StatusCodes.OK + " but was: " + response.code()),
