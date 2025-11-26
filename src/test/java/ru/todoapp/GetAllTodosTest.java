@@ -2,6 +2,7 @@ package ru.todoapp;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.todoapp.data.repositories.TodoRepository;
@@ -17,6 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.todoapp.utils.RandomGenerator.*;
 
+@Isolated
 @SpringBootTest
 public class GetAllTodosTest extends BaseTest {
     @Autowired

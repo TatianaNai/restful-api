@@ -51,5 +51,7 @@ public class AddTodoTest extends BaseTest {
     @DisplayName("Add todo with missing parameter. Negative test")
     public void shouldNotAllowAddTodoWithMissingParameter(TodoRequest todo) {
         assertUnsuccessfulResponse(todoService.createTodo(todo), StatusCodes.BAD_REQUEST);
+        todoRepository.findByTextIsNullOrCompletedIsNull()
+                .forEach(todoRepository::delete);
     }
 }

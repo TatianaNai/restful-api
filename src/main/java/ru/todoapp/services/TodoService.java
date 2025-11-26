@@ -68,4 +68,12 @@ public class TodoService {
         todoRepository.deleteById(id);
         return todoApiService.delete(id);
     }
+
+    public void deleteTodosByText(String text) {
+        List<Todo> todosDB= todoRepository.getByText(text);
+        for (Todo todo : todosDB) {
+            todoRepository.deleteById(todo.getId());
+            todoApiService.delete(todo.getId());
+        }
+    }
 }

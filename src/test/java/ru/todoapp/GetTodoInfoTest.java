@@ -91,6 +91,7 @@ public class GetTodoInfoTest extends BaseTest {
         int amountTodo = todoRepository.getByText(text).size();
 
         assertEquals(randomNumber, amountTodo);
+        todoService.deleteTodosByText(text);
     }
 
     private int getAmountOfAllTodo() {
