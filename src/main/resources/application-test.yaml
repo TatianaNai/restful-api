@@ -1,0 +1,11 @@
+api:
+  baseUri: http://localhost:${port}
+  login: ${login}
+  password: ${password}
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
