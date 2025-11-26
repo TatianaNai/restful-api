@@ -13,8 +13,8 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class TodoApiServiceImpl {
-private final TodoApiService todoApiService;
-private final TodoHeaders todoHeaders;
+    private final TodoApiService todoApiService;
+    private final TodoHeaders todoHeaders;
 
     @SneakyThrows
     public Response<List<TodoResponse>> get() {

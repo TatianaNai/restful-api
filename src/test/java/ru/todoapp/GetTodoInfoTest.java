@@ -85,7 +85,7 @@ public class GetTodoInfoTest extends BaseTest {
     public void shouldHaveCorrectGetTodosWithOneName() {
         String text = randomStringWithLength(randomIntWithBorders(5, 100));
         int randomNumber = randomIntWithBorders(2, 5);
-        for(int i = 0; i < randomNumber; i++) {
+        for (int i = 0; i < randomNumber; i++) {
             todoService.createTodo(new TodoRequest(text, true));
         }
         int amountTodo = todoRepository.getByText(text).size();

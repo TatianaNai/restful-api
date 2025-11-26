@@ -46,8 +46,8 @@ public class TodoService {
     public Response<Void> updateTodo(Long id, TodoRequest todoToUpdate) {
         log.info("Update todo with id: {}", id);
         Todo todo;
-        Optional<Todo> todoOpt= todoRepository.findById(id);
-        if(todoOpt.isPresent()) {
+        Optional<Todo> todoOpt = todoRepository.findById(id);
+        if (todoOpt.isPresent()) {
             todo = todoOpt.get();
         } else {
             throw new RuntimeException("Todo with id: " + id + " does not exist in DB");
