@@ -1,7 +1,5 @@
 package ru.todoapp.services;
 
-import org.apache.http.HttpStatus;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -26,7 +24,7 @@ public enum TodoIdService {
         testIds.remove(id);
 
         if (todoRestService.getListId().stream().anyMatch(toDoId -> toDoId == id)) {
-            todoRestService.deleteById(id, HttpStatus.SC_NO_CONTENT);
+            todoRestService.deleteResponse(id);
         }
     }
 }

@@ -1,9 +1,8 @@
 package ru.todoapp.services;
 
-import io.restassured.response.ValidatableResponse;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
 import ru.todoapp.models.TodoModel;
 import ru.todoapp.specifications.AuthSpecification;
 import ru.todoapp.specifications.DefaultSpecification;
@@ -12,78 +11,79 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasKey;
 
 @Slf4j
 public class TodoRestService {
 
-    public ValidatableResponse getTodosResponse(int statusCode) {
+    public Response getTodosResponse() {
         return given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
-                .get()
-                .then()
-                .spec(DefaultSpecification.responseSpec(statusCode));
+                .get();
     }
 
-    public ValidatableResponse getTodosResponse(int statusCode, Map<String, Integer> queryParams) {
+    public Response getTodosResponse(Map<String, Integer> queryParams) {
         RequestSpecification request = given().spec(DefaultSpecification.requestSpec());
         queryParams.forEach(request::queryParam);
         return request
                 .when()
-                .get()
-                .then()
-                .spec(DefaultSpecification.responseSpec(statusCode));
+                .get();
     }
 
-    public List<TodoModel> getListTodo() {
-        return getTodosResponse(HttpStatus.SC_OK)
+    public List<TodoModel> getListTodoFromResponse(Response response) {
+        return response
+                .then()
                 .extract()
                 .jsonPath()
                 .getList("$", TodoModel.class);
     }
 
     public List<Long> getListId() {
-        return getTodosResponse(HttpStatus.SC_OK)
+        return getTodosResponse()
+                .then()
                 .extract()
                 .jsonPath()
                 .getList("id", Long.class);
     }
 
-    public List<TodoModel> getListTodoWithParameters(int statusCode, Map<String, Integer> queryParams) {
-        return getTodosResponse(statusCode, queryParams)
-                .extract()
-                .jsonPath()
-                .getList("$", TodoModel.class);
-    }
-
-    public ValidatableResponse post(TodoModel todoModel, int statusCode) {
+    public Response postResponse(TodoModel todoModel) {
         return given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
                 .body(todoModel)
-                .post()
-                .then()
-                .spec(DefaultSpecification.responseSpec(statusCode));
+                .post();
     }
 
-    public void putById(TodoModel todoModel, long id, int statusCode) {
+    public Response deleteResponse(Long id) {
+        log.info("Delete todo with id {}", id);
+        return given()
+                .spec(AuthSpecification.requestSpec())
+                .when()
+                .delete("/" + id);
+    }
+
+    public Response putResponse(TodoModel todoModel, long id) {
         log.info("Update todo with id {}", id);
-        given()
+        return given()
                 .spec(DefaultSpecification.requestSpec())
                 .when()
                 .body(todoModel)
-                .put("/" + id)
+                .put("/" + id);
+    }
+
+    public void validateResponse(Response response, int statusCode) {
+        response
                 .then()
                 .spec(DefaultSpecification.responseSpec(statusCode));
     }
 
-    public void deleteById(long id, int statusCode) {
-        log.info("Delete todo with id {}", id);
-        given()
-                .spec(AuthSpecification.requestSpec())
-                .when()
-                .delete("/" + id)
+    public void validateAttributesInResponse(Response response, int statusCode) {
+        response
                 .then()
-                .spec(DefaultSpecification.responseSpec(statusCode));
+                .spec(DefaultSpecification.responseSpec(statusCode))
+                .body("$", everyItem(allOf(
+                        hasKey("id"), hasKey("text"), hasKey("completed"))));
     }
 }

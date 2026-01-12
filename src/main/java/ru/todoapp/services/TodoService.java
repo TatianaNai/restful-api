@@ -1,7 +1,6 @@
 package ru.todoapp.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
 import ru.todoapp.models.TodoModel;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class TodoService {
                     randomBoolean());
             todoIds.add(id);
             log.info("Add todo with id {}", id);
-            todoRestService.post(todo, HttpStatus.SC_CREATED);
+            todoRestService.postResponse(todo);
         }
         return todoIds;
     }
