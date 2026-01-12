@@ -23,6 +23,7 @@
         <allure.commons.version>2.29.0</allure.commons.version>
         <aspectj.version>1.9.24</aspectj.version>
         <rest-assured.version>5.4.0</rest-assured.version>
+        <cucumber.version>7.29.0</cucumber.version>
     </properties>
 
     <dependencyManagement>
@@ -105,6 +106,24 @@
       <dependency>
           <groupId>org.junit.jupiter</groupId>
           <artifactId>junit-jupiter-api</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>io.cucumber</groupId>
+          <artifactId>cucumber-java</artifactId>
+          <version>${cucumber.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>io.cucumber</groupId>
+          <artifactId>cucumber-junit-platform-engine</artifactId>
+          <version>${cucumber.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>io.cucumber</groupId>
+          <artifactId>cucumber-picocontainer</artifactId>
+          <version>${cucumber.version}</version>
+          <scope>test</scope>
       </dependency>
   </dependencies>
 
