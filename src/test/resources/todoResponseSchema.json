@@ -1,0 +1,22 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "id",
+      "text",
+      "completed"
+    ],
+    "properties": {
+      "id": {
+        "type": "number"
+      },
+      "text": {
+        "type": "string"
+      },
+      "completed": {
+        "type": "boolean"
+      }
+    }
+  }
+}
