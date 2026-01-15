@@ -29,12 +29,12 @@
 Переключиться на ветку
 
 ```bash
-  git checkout JIRA-17091
+  git checkout JIRA-26121
 ```
 
 Запустить тесты
 
 ```bash
-  mvn clean test -Dlogin=… -Dpassword=…
+  mvn clean test -Dlogin=… -Dpassword=… -Dport=…
 ```
 

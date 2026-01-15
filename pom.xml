@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.38</lombok.version>
         <junit.version>5.13.4</junit.version>
+        <junit.platform.version>1.14.1</junit.platform.version>
         <slf4j.version>2.0.16</slf4j.version>
         <logback.version>1.5.13</logback.version>
         <jackson.version>2.19.2</jackson.version>
@@ -24,6 +25,7 @@
         <aspectj.version>1.9.24</aspectj.version>
         <rest-assured.version>5.4.0</rest-assured.version>
         <cucumber.version>7.29.0</cucumber.version>
+        <json.schema.validator.version>2.9.0</json.schema.validator.version>
     </properties>
 
     <dependencyManagement>
@@ -42,6 +44,12 @@
       <dependency>
           <groupId>org.junit.jupiter</groupId>
           <artifactId>junit-jupiter</artifactId>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.junit.platform</groupId>
+          <artifactId>junit-platform-suite</artifactId>
+          <version>${junit.platform.version}</version>
           <scope>test</scope>
       </dependency>
       <dependency>
@@ -93,15 +101,9 @@
           <version>${rest-assured.version}</version>
       </dependency>
       <dependency>
-          <groupId>io.rest-assured</groupId>
-          <artifactId>json-schema-validator</artifactId>
-          <version>${rest-assured.version}</version>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
           <groupId>com.jayway.restassured</groupId>
           <artifactId>json-schema-validator</artifactId>
-          <version>2.9.0</version>
+          <version>${json.schema.validator.version}</version>
       </dependency>
       <dependency>
           <groupId>org.junit.jupiter</groupId>
@@ -160,8 +162,8 @@
                         <version>${aspectj.version}</version>
                     </dependency>
                 </dependencies>
-
             </plugin>
+
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>

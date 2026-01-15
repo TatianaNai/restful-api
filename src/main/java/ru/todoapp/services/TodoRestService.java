@@ -13,7 +13,6 @@ import java.util.Map;
 import static com.jayway.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.hasKey;
 
 @Slf4j
 public class TodoRestService {

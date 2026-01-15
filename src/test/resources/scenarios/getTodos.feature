@@ -1,11 +1,13 @@
 Feature: get todos
 
+  @isolated
   Scenario: Get all todos
     Given I prepare todos and send request to add todos to the app
     When I send request to get all todos
     Then I receive response with status code 200 and todos with all required fields
     And I delete all todos
 
+  @isolated
   Scenario Outline: Get todos with positive parameter "<paramName>"
     Given I prepare todos and send request to add todos to the app
     When I send request to get todos with positive parameter "<paramName>"

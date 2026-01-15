@@ -18,7 +18,8 @@ public class BaseStep {
     @Before
     public void setFilter() {
         RestAssured.filters(new AllureRestAssured());
-        RestAssured.baseURI = getProperty("baseUri");
+        RestAssured.baseURI = getProperty("baseUri")
+                .replace("${port}", getProperty("port"));
     }
 
     @After

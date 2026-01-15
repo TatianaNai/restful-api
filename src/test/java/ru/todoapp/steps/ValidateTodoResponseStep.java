@@ -15,18 +15,18 @@ public class ValidateTodoResponseStep {
         this.context = context;
     }
 
-    @Then("I receive response with status code {int}")
+    @Then("^I receive response with status code ([1-5]\\d{2})$")
     public void checkResponseStatusCode(int statusCode) {
         todoRestService.validateResponse(context.getResponse(), statusCode);
         assertEquals(statusCode, context.getResponse().statusCode(), "Status code from response " + context.getResponse().statusCode() + " is not equal to " + statusCode);
     }
 
-    @Then("I receive response with status code {int} and todos with all required fields")
+    @Then("^I receive response with status code ([1-5]\\d{2}) and todos with all required fields$")
     public void checkIfTodoContainsRequiredParameters(int statusCode) {
         todoRestService.validateAttributesInResponse(context.getResponse(), statusCode);
     }
 
-    @Then("I check json contract {string}")
+    @Then("^I check json contract (.+\\.json)$")
     public void checkJsonContract(String path) {
         todoRestService.validateJsonContract(context.getResponse(), path);
     }
