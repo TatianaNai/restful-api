@@ -20,7 +20,7 @@ public class PrepareAndCreateTodoStep {
         this.context = context;
     }
 
-    @Given("I prepare new todo with correct parameters")
+    @Given("I prepare todo with correct fields")
     public void createTodo() {
         context.setRandomId(TodoIdService.INSTANCE.generateId());
         context.setTodo(new TodoModel(context.getRandomId(),
@@ -28,7 +28,7 @@ public class PrepareAndCreateTodoStep {
                 randomBoolean()));
     }
 
-    @Given("I prepare new todo without parameter id")
+    @Given("I prepare todo without field id")
     public void createTodoWithoutId() {
         context.setRandomId(TodoIdService.INSTANCE.generateId());
         context.setTodo(TodoModel.builder()
@@ -37,7 +37,7 @@ public class PrepareAndCreateTodoStep {
                 .build());
     }
 
-    @Given("I prepare new todo without parameter text")
+    @Given("I prepare todo without field text")
     public void createTodoWithoutText() {
         context.setRandomId(TodoIdService.INSTANCE.generateId());
         context.setTodo(TodoModel.builder()
@@ -46,7 +46,7 @@ public class PrepareAndCreateTodoStep {
                 .build());
     }
 
-    @Given("I prepare new todo without parameter completed")
+    @Given("I prepare todo without field completed")
     public void createTodoWithoutCompleted() {
         context.setRandomId(TodoIdService.INSTANCE.generateId());
         context.setTodo(TodoModel.builder()
@@ -55,12 +55,12 @@ public class PrepareAndCreateTodoStep {
                 .build());
     }
 
-    @When("I send request to add new todo to the app")
+    @When("I send request to add todo to the app")
     public void postTodo() {
         context.setResponse(todoRestService.postResponse(context.getTodo()));
     }
 
-    @Given("I prepare new todos and send request to add new todos to the app")
+    @Given("I prepare todos and send request to add todos to the app")
     public void createTodos() {
         context.setTodoIds(todoService.createTodosWithAmount(randomIntWithBorders(5, 11)));
     }

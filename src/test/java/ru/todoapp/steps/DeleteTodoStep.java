@@ -25,7 +25,7 @@ public class DeleteTodoStep {
         context.getTodoIds().forEach(TodoIdService.INSTANCE::removeId);
     }
 
-    @When("I send request to delete new todo in the app")
+    @When("I send request to delete todo in the app")
     public void deleteTodo() {
         context.setResponse(todoRestService.deleteResponse(context.getTodo().getId()));
     }

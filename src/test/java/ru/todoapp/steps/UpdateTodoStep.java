@@ -20,14 +20,14 @@ public class UpdateTodoStep {
         this.context = context;
     }
 
-    @Given("I prepare todo to update existing todo")
+    @Given("I prepare todo to replace existing todo")
     public void createTodoForUpdate() {
         updatedTodo = new TodoModel(context.getRandomId(),
                 randomStringWithLength(randomIntWithBorders(5, 100)),
                 randomBoolean());
     }
 
-    @When("I send request to update new todo in the app")
+    @When("I send request to update todo in the app")
     public void updateTodo() {
         context.setResponse(todoRestService.putResponse(updatedTodo, context.getTodo().getId()));
     }

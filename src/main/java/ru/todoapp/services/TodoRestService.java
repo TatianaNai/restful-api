@@ -10,6 +10,7 @@ import ru.todoapp.specifications.DefaultSpecification;
 import java.util.List;
 import java.util.Map;
 
+import static com.jayway.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasKey;
@@ -85,5 +86,11 @@ public class TodoRestService {
                 .spec(DefaultSpecification.responseSpec(statusCode))
                 .body("$", everyItem(allOf(
                         hasKey("id"), hasKey("text"), hasKey("completed"))));
+    }
+
+    public void validateJsonContract(Response response, String path) {
+        response
+                .then()
+                .body(matchesJsonSchemaInClasspath(path));
     }
 }

@@ -26,13 +26,13 @@ public class GetTodoInfoStep {
     }
 
     @When("I send request to get todos with positive parameter {string}")
-    public void getTodosWithPositiveOffset(String param) {
+    public void getTodosWithPositiveParameter(String param) {
         parameterValue = randomIntWithBorders(0, 100);
         context.setResponse(todoRestService.getTodosResponse(Map.of(param, parameterValue)));
     }
 
     @Then("I check amount of todos in response with parameter {string}")
-    public void checkAmountTodosInResponseWithPositiveOffset(String param) {
+    public void checkAmountTodosInResponseWithPositiveParameter(String param) {
         int expectedAmountOfTodo;
         switch (param) {
             case "offset" -> expectedAmountOfTodo = Math.max(context.getTodoIds().size() - parameterValue, 0);
@@ -46,7 +46,7 @@ public class GetTodoInfoStep {
     }
 
     @When("I send request to get todos with negative parameter {string}")
-    public void getTodosWithNegativeOffset(String paramName) {
+    public void getTodosWithNegativeParameter(String paramName) {
         parameterValue = randomIntWithBorders(-100, 0);
         context.setResponse(todoRestService.getTodosResponse(Map.of(paramName, parameterValue)));
     }
